@@ -1,5 +1,5 @@
 const express = require("express");
-const perfumes = require("./products");
+let perfumes = require("./products");
 const cors = require("cors"); // yarn add cors
 
 const app = express();
@@ -7,10 +7,25 @@ const app = express();
 // Middleware
 app.use(cors());
 
-// Routes
+//////////// Routes ////////////
+
+//// list ////
 app.get("/perfumes", (req, res) => {
   // JSON = JavaScript Object Notation
   res.json(perfumes);
+});
+
+//// delete ////
+app.delete("/perfumes/:perfumeId", (req, res) => {
+  const { perfumeId } = req.params;
+  const foundPerfume = perfumes.find((perfume) => perfume.id === +perfumeId);
+  if (foundPerfume) {
+    perfumes = perfumes.filter((perfume) => perfume.id !== +perfumeId);
+    res.status(204).end(); //to tell no content and end response
+  } else {
+    //if the id was not in the identified list this message will appear
+    res.status(404).json({ message: "Perfume Not Found." });
+  }
 });
 
 app.listen(8000, () => {
