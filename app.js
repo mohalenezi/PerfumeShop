@@ -1,11 +1,14 @@
 const express = require("express");
 let perfumes = require("./products");
 const cors = require("cors"); // yarn add cors
+const bodyParser = require("body-parser");
+const slugify = require("slugify");
 
 const app = express();
 
 // Middleware
 app.use(cors());
+app.use(bodyParser.json());
 
 //////////// Routes ////////////
 
@@ -26,6 +29,19 @@ app.delete("/perfumes/:perfumeId", (req, res) => {
     //if the id was not in the identified list this message will appear
     res.status(404).json({ message: "Perfume Not Found." });
   }
+});
+
+//// create ////
+app.post("/perfumes", (req, res) => {
+  const id = perfumes.length + 1;
+  const slug = slugify(req.body.name, { lower: true });
+  const newPerfume = {
+    id,
+    slug,
+    ...req.body,
+  };
+  perfumes.push(newPerfume);
+  res.status(201).json(newPerfume); // response end with created perfume
 });
 
 app.listen(8000, () => {
