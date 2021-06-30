@@ -44,6 +44,23 @@ app.post("/perfumes", (req, res) => {
   res.status(201).json(newPerfume); // response end with created perfume
 });
 
+//// update copyied items from delete //* ////
+app.put("/perfumes/:perfumeId", (req, res) => {
+  //*
+  const { perfumeId } = req.params; //*
+  const foundPerfume = perfumes.find((perfume) => perfume.id === +perfumeId); //*
+  if (foundPerfume) {
+    //*
+    for (const key in req.body) foundPerfume[key] = req.body[key]; //loop over the keys variable which are the attributes in each object at the array
+    foundPerfume.slug = slugify(foundPerfume.name, { lower: true });
+    res.status(204).end(); //to tell no content and end response //*
+  } else {
+    //*
+    //if the id was not in the identified list this message will appear
+    res.status(404).json({ message: "Perfume Not Found." });
+  }
+});
+
 app.listen(8000, () => {
   console.log("The application is running on localhost:8000");
 });
