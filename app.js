@@ -15,7 +15,7 @@ app.use("/perfumes", perfumeRoutes);
 
 const run = async () => {
   try {
-    await db.sequelize.authenticate(); //to be sure the connection is ok between the data and app
+    await db.sequelize.sync(); //to be sure the connection is ok between the data and app
     console.log("Connection successful");
     app.listen(8000, () => {
       console.log("The application is running on localhost:8000");
@@ -25,4 +25,4 @@ const run = async () => {
   }
 };
 
-run();
+run(); // call the function to make the check

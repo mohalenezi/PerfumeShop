@@ -1,8 +1,18 @@
-let perfumes = require("../../products");
+// let perfumes = require("../../products");
 const slugify = require("slugify");
 
-exports.perfumeFetch = (req, res) => {
-  res.json(perfumes);
+// import the model
+const { Perfume } = require("../../db/models");
+
+exports.perfumeFetch = async (req, res) => {
+  try {
+    const perfumes = await Perfume.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
+    res.json(perfumes);
+  } catch {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 exports.deletePerfume = (req, res) => {
