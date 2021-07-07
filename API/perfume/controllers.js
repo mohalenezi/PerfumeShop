@@ -1,56 +1,51 @@
 // let perfumes = require("../../products");
-const slugify = require("slugify");
-
+// const slugify = require("slugify");
 // import the model
 const { Perfume } = require("../../db/models");
 
-exports.perfumeFetch = async (req, res) => {
+exports.fetchPerfume = async (perfumeId, next) => {
+  try {
+    const perfume = await Perfume.findByPk(perfumeId);
+    return perfume;
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.perfumeFetch = async (req, res, next) => {
   try {
     const perfumes = await Perfume.findAll({
       attributes: { exclude: ["createdAt", "updatedAt"] },
     });
     res.json(perfumes);
-  } catch {
-    res.status(500).json({ message: error.message });
+  } catch (error) {
+    next(error);
   }
 };
 
-exports.deletePerfume = (req, res) => {
-  const { perfumeId } = req.params;
-  const foundPerfume = perfumes.find((perfume) => perfume.id === +perfumeId);
-  if (foundPerfume) {
-    perfumes = perfumes.filter((perfume) => perfume.id !== +perfumeId);
+exports.createPerfume = async (req, res, next) => {
+  try {
+    const newPerfume = await Perfume.create(req.body);
+    res.status(201).json(newPerfume); // response end with created perfume
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deletePerfume = async (req, res, next) => {
+  try {
+    await req.perfume.destroy();
     res.status(204).end(); //to tell no content and end response
-  } else {
-    //if the id was not in the identified list this message will appear
-    res.status(404).json({ message: "Perfume Not Found." });
+  } catch (error) {
+    next(error);
   }
 };
 
-exports.createPerfume = (req, res) => {
-  const id = perfumes.length + 1;
-  const slug = slugify(req.body.name, { lower: true });
-  const newPerfume = {
-    id,
-    slug,
-    ...req.body,
-  };
-  perfumes.push(newPerfume);
-  res.status(201).json(newPerfume); // response end with created perfume
-};
-
-exports.updatePerfume = (req, res) => {
-  //*
-  const { perfumeId } = req.params; //*
-  const foundPerfume = perfumes.find((perfume) => perfume.id === +perfumeId); //*
-  if (foundPerfume) {
-    //*
-    for (const key in req.body) foundPerfume[key] = req.body[key]; //loop over the keys variable which are the attributes in each object at the array
-    foundPerfume.slug = slugify(foundPerfume.name, { lower: true });
-    res.status(204).end(); //to tell no content and end response //*
-  } else {
-    //*
-    //if the id was not in the identified list this message will appear
-    res.status(404).json({ message: "Perfume Not Found." });
+exports.updatePerfume = async (req, res, next) => {
+  try {
+    await req.perfume.update(req.body);
+    res.status(204).end();
+  } catch (error) {
+    next(error);
   }
 };

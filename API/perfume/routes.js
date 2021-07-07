@@ -6,9 +6,22 @@ const {
   deletePerfume,
   createPerfume,
   updatePerfume,
+  fetchPerfume,
 } = require("./controllers");
-
 const router = express.Router();
+
+// parameter middleware (param)
+router.param("perfumeId", async (req, res, next, perfumeId) => {
+  const perfume = await fetchPerfume(perfumeId, next);
+  if (perfume) {
+    req.perfume = perfume;
+    next();
+  } else {
+    const error = new Error("perfume Not Found.");
+    error.status = 404;
+    next(error);
+  }
+});
 
 //////////// Routes ////////////
 
