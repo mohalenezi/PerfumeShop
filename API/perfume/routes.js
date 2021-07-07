@@ -1,4 +1,3 @@
-const { Router } = require("express");
 const express = require("express");
 
 const {
@@ -8,6 +7,8 @@ const {
   updatePerfume,
   fetchPerfume,
 } = require("./controllers");
+
+const multer = require("multer");
 const router = express.Router();
 
 // parameter middleware (param)
@@ -23,6 +24,16 @@ router.param("perfumeId", async (req, res, next, perfumeId) => {
   }
 });
 
+// multer middleware ======//
+const storage = multer.diskStorage({
+  destination: "./media",
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
+
 //////////// Routes ////////////
 
 //// list ////
@@ -33,9 +44,9 @@ router.get("/", perfumeFetch);
 router.delete("/:perfumeId", deletePerfume);
 
 //// create ////
-router.post("/", createPerfume);
+router.post("/", upload.single("image"), createPerfume);
 
-//// update copyied items from delete //* ////
-router.put("/:perfumeId", updatePerfume);
+//// update copyied method from delete //* ////
+router.put("/:perfumeId", upload.single("image"), updatePerfume);
 
 module.exports = router;

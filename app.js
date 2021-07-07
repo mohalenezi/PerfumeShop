@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 // perfume Routes =====
 app.use("/perfumes", perfumeRoutes);
-
+app.use("/media", express.static("media"));
 // Error Handling Middleware =====
 app.use((err, req, res, next) => {
   res

@@ -25,6 +25,7 @@ exports.perfumeFetch = async (req, res, next) => {
 
 exports.createPerfume = async (req, res, next) => {
   try {
+    if (req.file) req.body.image = `http://${req.get("host")}/${req.file.path}`;
     const newPerfume = await Perfume.create(req.body);
     res.status(201).json(newPerfume); // response end with created perfume
   } catch (error) {
@@ -43,8 +44,9 @@ exports.deletePerfume = async (req, res, next) => {
 
 exports.updatePerfume = async (req, res, next) => {
   try {
-    await req.perfume.update(req.body);
-    res.status(204).end();
+    if (req.file) req.body.image = `http://${req.get("host")}/${req.file.path}`;
+    const updatedPerfume = await req.perfume.update(req.body);
+    res.json(updatedPerfume);
   } catch (error) {
     next(error);
   }
