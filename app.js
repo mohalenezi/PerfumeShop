@@ -3,6 +3,7 @@ const cors = require("cors"); // yarn add cors
 const bodyParser = require("body-parser");
 const perfumeRoutes = require("./API/perfume/routes");
 const shopRoutes = require("./API/shop/routes");
+const userRoutes = require("./API/user/routes");
 //database
 const db = require("./db/models/index");
 const app = express();
@@ -14,6 +15,7 @@ app.use(bodyParser.json());
 // perfume Routes =====
 app.use("/perfumes", perfumeRoutes);
 app.use("/shops", shopRoutes);
+app.use(userRoutes);
 app.use("/media", express.static("media"));
 // Error Handling Middleware =====
 app.use((err, req, res, next) => {
