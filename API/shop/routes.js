@@ -1,5 +1,6 @@
 const express = require("express");
 const multer = require("multer");
+const passport = require("passport");
 
 const {
   shopFetch,
@@ -36,10 +37,20 @@ router.param("shopId", async (req, res, next, shopId) => {
 router.get("/", shopFetch);
 
 //// create ////
-router.post("/", upload.single("image"), createShop);
+router.post(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  upload.single("image"),
+  createShop
+);
 
 /// create a perfume in a shop
 
-router.post("/:shopId/perfumes", upload.single("image"), createPerfume);
+router.post(
+  "/:shopId/perfumes",
+  passport.authenticate("jwt", { session: false }),
+  upload.single("image"),
+  createPerfume
+);
 
 module.exports = router;

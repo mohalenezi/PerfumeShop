@@ -6,6 +6,7 @@ const shopRoutes = require("./API/shop/routes");
 const userRoutes = require("./API/user/routes");
 const passport = require("passport");
 const { localStrategy } = require("./middleware/passport");
+const { jwtStrategy } = require("./middleware/passport");
 //database
 const db = require("./db/models/index");
 const app = express();
@@ -13,13 +14,14 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(passport.initialize());
+passport.use(localStrategy);
+passport.use(jwtStrategy);
 
 // perfume Routes =====
 app.use("/perfumes", perfumeRoutes);
 app.use("/shops", shopRoutes);
 app.use(userRoutes);
-app.use(passport.initialize());
-passport.use(localStrategy);
 
 app.use("/media", express.static("media"));
 // Error Handling Middleware =====
