@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const perfumeRoutes = require("./API/perfume/routes");
 const shopRoutes = require("./API/shop/routes");
 const userRoutes = require("./API/user/routes");
+const orderRoutes = require("./API/order/routes");
 const passport = require("passport");
 const { localStrategy } = require("./middleware/passport");
 const { jwtStrategy } = require("./middleware/passport");
@@ -21,6 +22,7 @@ passport.use(jwtStrategy);
 // perfume Routes =====
 app.use("/perfumes", perfumeRoutes);
 app.use("/shops", shopRoutes);
+app.use(orderRoutes);
 app.use(userRoutes);
 
 app.use("/media", express.static("media"));
